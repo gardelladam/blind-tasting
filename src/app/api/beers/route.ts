@@ -16,6 +16,7 @@ export async function GET() {
           _id: beer._id.toString(),
           name: beer.name,
           price: beer.price,
+          alcoholPercentage: beer.alcoholPercentage,
           imageUrl: beer.imageUrl,
           ratings: ratings.map((r) => ({
             _id: r._id.toString(),
@@ -39,11 +40,11 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { name, price, imageUrl } = body;
+    const { name, price, alcoholPercentage, imageUrl } = body;
 
-    if (!name || price === undefined) {
+    if (!name || price === undefined || alcoholPercentage === undefined) {
       return NextResponse.json(
-        { error: "Name and price are required" },
+        { error: "Name, price, and alcohol percentage are required" },
         { status: 400 }
       );
     }
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
     const beer = await Beer.create({
       name,
       price: Number(price),
+      alcoholPercentage: Number(alcoholPercentage),
       imageUrl: imageUrl || undefined,
     });
 
@@ -59,6 +61,7 @@ export async function POST(request: NextRequest) {
         _id: beer._id.toString(),
         name: beer.name,
         price: beer.price,
+        alcoholPercentage: beer.alcoholPercentage,
         imageUrl: beer.imageUrl,
         ratings: [],
       },
@@ -87,11 +90,11 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, price, imageUrl } = body;
+    const { name, price, alcoholPercentage, imageUrl } = body;
 
-    if (!name || price === undefined) {
+    if (!name || price === undefined || alcoholPercentage === undefined) {
       return NextResponse.json(
-        { error: "Name and price are required" },
+        { error: "Name, price, and alcohol percentage are required" },
         { status: 400 }
       );
     }
@@ -101,6 +104,7 @@ export async function PUT(request: NextRequest) {
       {
         name,
         price: Number(price),
+        alcoholPercentage: Number(alcoholPercentage),
         imageUrl: imageUrl || undefined,
       },
       { new: true }
@@ -114,6 +118,7 @@ export async function PUT(request: NextRequest) {
       _id: updatedBeer._id.toString(),
       name: updatedBeer.name,
       price: updatedBeer.price,
+      alcoholPercentage: updatedBeer.alcoholPercentage,
       imageUrl: updatedBeer.imageUrl,
     });
   } catch (error) {

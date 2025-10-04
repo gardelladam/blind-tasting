@@ -4,6 +4,7 @@ export interface IBeer {
   _id: string;
   name: string;
   price: number;
+  alcoholPercentage: number;
   imageUrl?: string;
   createdAt: Date;
 }
@@ -16,6 +17,10 @@ const BeerSchema = new Schema<IBeer>({
   price: {
     type: Number,
     required: [true, "Price is required"],
+  },
+  alcoholPercentage: {
+    type: Number,
+    required: [true, "Alcohol percentage is required"],
   },
   imageUrl: {
     type: String,

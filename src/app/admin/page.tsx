@@ -1,21 +1,48 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
+  const [showNames, setShowNames] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch("/api/settings");
+        if (!response.ok) throw new Error("Failed to fetch settings");
+        const data = await response.json();
+        setShowNames(data.showBeerNames);
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-8">
       <div className="max-w-2xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-purple-900">🔧 Adminpanel</h1>
-          <button
-            onClick={() => router.push("/")}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer"
-          >
-            ← Tillbaka till Resultat
-          </button>
+          <div className="flex gap-2">
+            {showNames && (
+              <button
+                onClick={() => router.push("/stats")}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer"
+              >
+                📊 Statistik
+              </button>
+            )}
+            <button
+              onClick={() => router.push("/")}
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer"
+            >
+              ← Tillbaka till Resultat
+            </button>
+          </div>
         </div>
 
         <div className="space-y-4">

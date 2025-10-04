@@ -13,6 +13,7 @@ interface Beer {
   _id: string;
   name: string;
   price: number;
+  alcoholPercentage: number;
   imageUrl?: string;
   ratings: Rating[];
 }
@@ -80,12 +81,22 @@ export default function HomePage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-green-900">🏆 Resultat</h1>
-          <button
-            onClick={() => router.push("/admin")}
-            className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer"
-          >
-            Adminpanel
-          </button>
+          <div className="flex gap-2">
+            {showNames && (
+              <button
+                onClick={() => router.push("/stats")}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer"
+              >
+                📊 Statistik
+              </button>
+            )}
+            <button
+              onClick={() => router.push("/admin")}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 cursor-pointer"
+            >
+              Adminpanel
+            </button>
+          </div>
         </div>
 
         {beers.length === 0 ? (
@@ -144,9 +155,16 @@ export default function HomePage() {
                             : `Öl #${beer.beerNumber}`}
                         </h3>
                       </div>
-                      <p className="text-gray-600 text-sm">
-                        Pris: {beer.price.toFixed(2)} kr
-                      </p>
+                      {showNames && (
+                        <div className="space-y-0.5">
+                          <p className="text-gray-700 text-base font-medium">
+                            Pris: {beer.price.toFixed(2)} kr
+                          </p>
+                          <p className="text-gray-600 text-sm">
+                            Alkoholhalt: {beer.alcoholPercentage.toFixed(1)}%
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-green-700">

@@ -12,6 +12,7 @@ interface Beer {
   _id: string;
   name: string;
   price: number;
+  alcoholPercentage: number;
   imageUrl?: string;
   ratings: Rating[];
 }
@@ -24,6 +25,7 @@ export default function RatePage() {
   const [editForm, setEditForm] = useState({
     name: "",
     price: "",
+    alcoholPercentage: "",
     imageUrl: "",
   });
   const router = useRouter();
@@ -140,18 +142,19 @@ export default function RatePage() {
     setEditForm({
       name: beer.name,
       price: beer.price.toString(),
+      alcoholPercentage: beer.alcoholPercentage.toString(),
       imageUrl: beer.imageUrl || "",
     });
   };
 
   const handleCancelEdit = () => {
     setEditingBeerId(null);
-    setEditForm({ name: "", price: "", imageUrl: "" });
+    setEditForm({ name: "", price: "", alcoholPercentage: "", imageUrl: "" });
   };
 
   const handleUpdateBeer = async (beerId: string) => {
-    if (!editForm.name || !editForm.price) {
-      alert("Namn och pris är obligatoriska");
+    if (!editForm.name || !editForm.price || !editForm.alcoholPercentage) {
+      alert("Namn, pris och alkoholhalt är obligatoriska");
       return;
     }
 
@@ -164,6 +167,7 @@ export default function RatePage() {
         body: JSON.stringify({
           name: editForm.name,
           price: parseFloat(editForm.price),
+          alcoholPercentage: parseFloat(editForm.alcoholPercentage),
           imageUrl: editForm.imageUrl || undefined,
         }),
       });
@@ -171,7 +175,7 @@ export default function RatePage() {
       if (!response.ok) throw new Error("Failed to update beer");
 
       setEditingBeerId(null);
-      setEditForm({ name: "", price: "", imageUrl: "" });
+      setEditForm({ name: "", price: "", alcoholPercentage: "", imageUrl: "" });
       await fetchBeers();
     } catch (error) {
       console.error("Error updating beer:", error);
@@ -273,6 +277,26 @@ export default function RatePage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Alkoholhalt %
+                      </label>
+                      <input
+                        type="number"
+                        value={editForm.alcoholPercentage}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            alcoholPercentage: e.target.value,
+                          })
+                        }
+                        step="0.1"
+                        min="0"
+                        max="100"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
                         Bild URL (valfritt)
                       </label>
                       <input
@@ -307,7 +331,8 @@ export default function RatePage() {
                           Öl #{index + 1}: {beer.name}
                         </h3>
                         <p className="text-gray-600">
-                          Pris: {beer.price.toFixed(2)} kr
+                          Pris: {beer.price.toFixed(2)} kr •{" "}
+                          {beer.alcoholPercentage.toFixed(1)}%
                         </p>
                         {beer.imageUrl && (
                           <p className="text-gray-500 text-xs mt-1">
