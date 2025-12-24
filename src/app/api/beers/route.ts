@@ -42,17 +42,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, price, alcoholPercentage, imageUrl } = body;
 
-    if (!name || price === undefined || alcoholPercentage === undefined) {
-      return NextResponse.json(
-        { error: "Name, price, and alcohol percentage are required" },
-        { status: 400 }
-      );
+    if (!name) {
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     const beer = await Beer.create({
       name,
-      price: Number(price),
-      alcoholPercentage: Number(alcoholPercentage),
+      price: price || undefined,
+      alcoholPercentage: alcoholPercentage || undefined,
       imageUrl: imageUrl || undefined,
     });
 
@@ -92,7 +89,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { name, price, alcoholPercentage, imageUrl } = body;
 
-    if (!name || price === undefined || alcoholPercentage === undefined) {
+    if (!name) {
       return NextResponse.json(
         { error: "Name, price, and alcohol percentage are required" },
         { status: 400 }
@@ -103,8 +100,8 @@ export async function PUT(request: NextRequest) {
       beerId,
       {
         name,
-        price: Number(price),
-        alcoholPercentage: Number(alcoholPercentage),
+        price: price,
+        alcoholPercentage: alcoholPercentage,
         imageUrl: imageUrl || undefined,
       },
       { new: true }

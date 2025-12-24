@@ -48,16 +48,16 @@ export default function AdminPage() {
         <div className="space-y-4">
           <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow">
             <h2 className="text-2xl font-bold text-gray-800 mb-3">
-              📝 Lägg till öl
+              📝 Lägg till vara
             </h2>
             <p className="text-gray-600 mb-4">
-              Lägg till en ny öl i testlistan med namn och pris.
+              Lägg till en ny vara i testlistan med namn och pris.
             </p>
             <button
               onClick={() => router.push("/add")}
               className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-md hover:shadow-lg cursor-pointer"
             >
-              Gå till Lägg till öl
+              Gå till Lägg till-sida
             </button>
           </div>
 

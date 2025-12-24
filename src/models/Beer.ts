@@ -1,10 +1,10 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 export interface IBeer {
   _id: string;
   name: string;
-  price: number;
-  alcoholPercentage: number;
+  price?: number;
+  alcoholPercentage?: number;
   imageUrl?: string;
   createdAt: Date;
 }
@@ -16,11 +16,11 @@ const BeerSchema = new Schema<IBeer>({
   },
   price: {
     type: Number,
-    required: [true, "Price is required"],
+    required: false,
   },
   alcoholPercentage: {
     type: Number,
-    required: [true, "Alcohol percentage is required"],
+    required: false,
   },
   imageUrl: {
     type: String,

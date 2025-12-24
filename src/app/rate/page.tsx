@@ -11,8 +11,8 @@ interface Rating {
 interface Beer {
   _id: string;
   name: string;
-  price: number;
-  alcoholPercentage: number;
+  price?: number;
+  alcoholPercentage?: number;
   imageUrl?: string;
   ratings: Rating[];
 }
@@ -141,8 +141,8 @@ export default function RatePage() {
     setEditingBeerId(beer._id);
     setEditForm({
       name: beer.name,
-      price: beer.price.toString(),
-      alcoholPercentage: beer.alcoholPercentage.toString(),
+      price: beer.price?.toString() || "",
+      alcoholPercentage: beer.alcoholPercentage?.toString() || "",
       imageUrl: beer.imageUrl || "",
     });
   };
@@ -153,7 +153,7 @@ export default function RatePage() {
   };
 
   const handleUpdateBeer = async (beerId: string) => {
-    if (!editForm.name || !editForm.price || !editForm.alcoholPercentage) {
+    if (!editForm.name) {
       alert("Namn, pris och alkoholhalt är obligatoriska");
       return;
     }
@@ -330,9 +330,14 @@ export default function RatePage() {
                         <h3 className="text-2xl font-bold text-gray-800">
                           Öl #{index + 1}: {beer.name}
                         </h3>
+
                         <p className="text-gray-600">
-                          Pris: {beer.price.toFixed(2)} kr •{" "}
-                          {beer.alcoholPercentage.toFixed(1)}%
+                          {beer.price != undefined && (
+                            <>Pris: {beer.price.toFixed(2)} kr • </>
+                          )}
+                          {beer.alcoholPercentage != undefined && (
+                            <>{beer.alcoholPercentage.toFixed(1)}%</>
+                          )}
                         </p>
                         {beer.imageUrl && (
                           <p className="text-gray-500 text-xs mt-1">

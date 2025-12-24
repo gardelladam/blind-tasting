@@ -14,7 +14,7 @@ export default function AddBeerPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !price || !alcoholPercentage) {
+    if (!name) {
       alert("Vänligen fyll i alla obligatoriska fält");
       return;
     }
@@ -29,8 +29,9 @@ export default function AddBeerPage() {
         },
         body: JSON.stringify({
           name,
-          price: parseFloat(price),
-          alcoholPercentage: parseFloat(alcoholPercentage),
+          price: price != "" ? parseFloat(price) : undefined,
+          alcoholPercentage:
+            alcoholPercentage != "" ? parseFloat(alcoholPercentage) : undefined,
           imageUrl: imageUrl || undefined,
         }),
       });
@@ -120,7 +121,6 @@ export default function AddBeerPage() {
                 step="0.1"
                 min="0"
                 max="100"
-                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
                 placeholder="t.ex. 5.0"
               />

@@ -12,8 +12,8 @@ interface Rating {
 interface Beer {
   _id: string;
   name: string;
-  price: number;
-  alcoholPercentage: number;
+  price?: number;
+  alcoholPercentage?: number;
   imageUrl?: string;
   ratings: Rating[];
 }
@@ -151,18 +151,22 @@ export default function HomePage() {
                         )}
                         <h3 className="text-lg font-bold text-gray-800">
                           {showNames
-                            ? `Öl #${beer.beerNumber}: ${beer.name}`
-                            : `Öl #${beer.beerNumber}`}
+                            ? `Julmust #${beer.beerNumber}: ${beer.name}`
+                            : `Julmust #${beer.beerNumber}`}
                         </h3>
                       </div>
                       {showNames && (
                         <div className="space-y-0.5">
-                          <p className="text-gray-700 text-base font-medium">
-                            Pris: {beer.price.toFixed(2)} kr
-                          </p>
-                          <p className="text-gray-600 text-sm">
-                            Alkoholhalt: {beer.alcoholPercentage.toFixed(1)}%
-                          </p>
+                          {beer.price != undefined && (
+                            <p className="text-gray-700 text-base font-medium">
+                              Pris: {beer.price.toFixed(2)} kr
+                            </p>
+                          )}
+                          {beer.alcoholPercentage != undefined && (
+                            <p className="text-gray-600 text-sm">
+                              Alkoholhalt: {beer.alcoholPercentage.toFixed(1)}%
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>

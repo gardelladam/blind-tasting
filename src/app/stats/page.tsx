@@ -21,16 +21,16 @@ interface Rating {
 interface Beer {
   _id: string;
   name: string;
-  price: number;
-  alcoholPercentage: number;
+  price?: number;
+  alcoholPercentage?: number;
   imageUrl?: string;
   ratings: Rating[];
 }
 
 interface BeerWithStats {
   name: string;
-  price: number;
-  alcoholPercentage: number;
+  price?: number;
+  alcoholPercentage?: number;
   averageRating: number;
   ratingCount: number;
 }
@@ -76,24 +76,40 @@ export default function StatsPage() {
   }, []);
 
   // Calculate min and max price for X-axis domain
-  const minPrice =
-    beers.length > 0 ? Math.min(...beers.map((b) => b.price)) : 0;
-  const maxPrice =
-    beers.length > 0 ? Math.max(...beers.map((b) => b.price)) : 100;
+  const prices = beers
+    .map((b) => b.price)
+    .filter((p): p is number => p != null);
+
+  const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+  const maxPrice = prices.length > 0 ? Math.max(...prices) : 100;
+
   const priceRange = maxPrice - minPrice;
   const pricePadding = priceRange * 0.1; // Add 10% padding on each side
 
   // Calculate correlation coefficient
   const calculateCorrelation = () => {
-    if (beers.length < 2) return 0;
+    // Only include beers with a defined price
+    const validBeers = beers.filter((b) => b.price != null);
+    if (validBeers.length < 2) return 0;
 
-    const n = beers.length;
-    const sumX = beers.reduce((sum, b) => sum + b.price, 0);
-    const sumY = beers.reduce((sum, b) => sum + b.averageRating, 0);
-    const sumXY = beers.reduce((sum, b) => sum + b.price * b.averageRating, 0);
-    const sumX2 = beers.reduce((sum, b) => sum + b.price * b.price, 0);
-    const sumY2 = beers.reduce(
-      (sum, b) => sum + b.averageRating * b.averageRating,
+    const n = validBeers.length;
+
+    // Destructure price to make TS happy
+    const sumX = validBeers.reduce((sum, { price }) => sum + price!, 0);
+    const sumY = validBeers.reduce(
+      (sum, { averageRating }) => sum + averageRating,
+      0
+    );
+    const sumXY = validBeers.reduce(
+      (sum, { price, averageRating }) => sum + price! * averageRating,
+      0
+    );
+    const sumX2 = validBeers.reduce(
+      (sum, { price }) => sum + price! * price!,
+      0
+    );
+    const sumY2 = validBeers.reduce(
+      (sum, { averageRating }) => sum + averageRating * averageRating,
       0
     );
 
@@ -120,12 +136,16 @@ export default function StatsPage() {
       return (
         <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
           <p className="font-semibold">{data.name}</p>
-          <p className="text-sm">Pris: {data.price.toFixed(2)} kr</p>
+          {data.price != undefined && (
+            <p className="text-sm">Pris: {data.price.toFixed(2)} kr</p>
+          )}
           <p className="text-sm">Betyg: {data.averageRating.toFixed(2)} / 5</p>
           <p className="text-sm">Antal betyg: {data.ratingCount}</p>
-          <p className="text-sm">
-            Alkoholhalt: {data.alcoholPercentage.toFixed(1)}%
-          </p>
+          {data.alcoholPercentage != undefined && (
+            <p className="text-sm">
+              Alkoholhalt: {data.alcoholPercentage.toFixed(1)}%
+            </p>
+          )}
         </div>
       );
     }
